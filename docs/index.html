@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>ComfyUI One-Click Installer | ComfyUI 一键安装教程 | AI Manga Workflow</title>
+  <meta name="description" content="The easiest way to install ComfyUI on Windows, Linux, and macOS. One-click installer with pre-built AI manga & anime workflows. ComfyUI 一键安装脚本，含AI漫剧工作流模板。" />
+  <meta name="keywords" content="ComfyUI install, ComfyUI installer, ComfyUI tutorial, ComfyUI windows, ComfyUI one click, AI manga workflow, stable diffusion, ComfyUI 安装, ComfyUI 教程, AI漫剧, comfyui-installer" />
+  <link rel="canonical" href="https://ryantryor.github.io/comfyui-installer/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="ComfyUI One-Click Installer – AI Manga Workflow" />
+  <meta property="og:description" content="Install ComfyUI in one command. Pre-built AI manga & comic workflows included. Windows / Linux / macOS." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ryantryor.github.io/comfyui-installer/" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #111118;
+      --bg3: #1a1a26;
+      --border: rgba(255,255,255,0.07);
+      --text: #e8e8f0;
+      --muted: #8888a8;
+      --accent: #7c6fee;
+      --accent2: #a78bfa;
+      --green: #34d399;
+      --orange: #fb923c;
+      --pink: #f472b6;
+      --glow: rgba(124,111,238,0.3);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 60px;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-weight: 700; font-size: 1.1rem; color: var(--accent2); letter-spacing: -0.02em; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-lang { display: flex; gap: 0.5rem; }
+    .lang-btn {
+      padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600;
+      border: 1px solid var(--border); background: transparent; color: var(--muted);
+      cursor: pointer; transition: all 0.2s; text-decoration: none;
+    }
+    .lang-btn.active, .lang-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 6rem 1.5rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(124,111,238,0.15) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 1rem; border-radius: 999px;
+      border: 1px solid rgba(124,111,238,0.4);
+      background: rgba(124,111,238,0.1);
+      font-size: 0.8rem; color: var(--accent2); font-weight: 500;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 800; line-height: 1.1;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #fff 30%, var(--accent2) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero p {
+      font-size: 1.15rem; color: var(--muted); max-width: 540px;
+      margin: 0 auto 2.5rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-btns {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      margin-bottom: 3rem;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem; border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #9d4edd);
+      color: #fff; font-weight: 600; font-size: 0.95rem;
+      text-decoration: none; border: none; cursor: pointer;
+      box-shadow: 0 4px 24px var(--glow);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px var(--glow); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 1.75rem; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--bg2);
+      color: var(--text); font-weight: 500; font-size: 0.95rem;
+      text-decoration: none; transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); background: var(--bg3); }
+
+    /* ── INSTALL BLOCK ── */
+    .install-block {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+      padding: 0.5rem 1.5rem 1.5rem; max-width: 600px; width: 100%; text-align: left;
+      margin: 0 auto;
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+    .install-tabs { display: flex; gap: 0; margin-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .install-tab {
+      padding: 0.6rem 1.25rem; font-size: 0.8rem; font-weight: 600;
+      color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
+      transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none;
+    }
+    .install-tab.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+    .code-panel { display: none; }
+    .code-panel.active { display: block; }
+    .code-block {
+      background: var(--bg3); border-radius: 10px; padding: 1rem 1.25rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+      color: var(--green); position: relative; overflow-x: auto;
+    }
+    .copy-btn {
+      position: absolute; top: 0.6rem; right: 0.6rem;
+      padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600;
+      background: rgba(255,255,255,0.08); border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer; transition: all 0.2s;
+    }
+    .copy-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;
+      padding: 3rem 1.5rem;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat { text-align: center; }
+    .stat-number { font-size: 2rem; font-weight: 800; color: var(--accent2); }
+    .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.2rem; }
+
+    /* ── SECTIONS ── */
+    .section { padding: 5rem 1.5rem; max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      display: inline-block; padding: 0.3rem 0.8rem; border-radius: 999px;
+      background: rgba(124,111,238,0.1); border: 1px solid rgba(124,111,238,0.3);
+      color: var(--accent2); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em;
+      text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .section h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800;
+      letter-spacing: -0.02em; margin-bottom: 1rem;
+    }
+    .section > p { color: var(--muted); font-size: 1.05rem; max-width: 540px; margin-bottom: 3rem; }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem;
+    }
+    .feature-card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+      padding: 1.75rem; transition: border-color 0.2s, transform 0.2s;
+    }
+    .feature-card:hover { border-color: rgba(124,111,238,0.4); transform: translateY(-3px); }
+    .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .feature-card p { color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+
+    /* ── TUTORIAL STEPS ── */
+    .steps { display: flex; flex-direction: column; gap: 1.5rem; }
+    .step {
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+      padding: 1.75rem;
+    }
+    .step-num {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #9d4edd);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem; color: #fff;
+      box-shadow: 0 4px 12px var(--glow);
+    }
+    .step-content h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .step-content p { color: var(--muted); font-size: 0.88rem; }
+    .step-content code {
+      background: var(--bg3); padding: 0.15rem 0.45rem; border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--green);
+    }
+    .step-code {
+      margin-top: 0.75rem; background: var(--bg3); border-radius: 10px;
+      padding: 0.85rem 1rem; font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem; color: var(--green); overflow-x: auto;
+    }
+
+    /* ── CLOUD CARDS ── */
+    .cloud-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.25rem;
+    }
+    .cloud-card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+      padding: 1.75rem; text-decoration: none; color: var(--text);
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .cloud-card:hover {
+      border-color: rgba(124,111,238,0.5); transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(124,111,238,0.1);
+    }
+    .cloud-card.featured { border-color: rgba(124,111,238,0.4); background: rgba(124,111,238,0.05); }
+    .cloud-logo { font-size: 2.2rem; }
+    .cloud-name { font-weight: 700; font-size: 1.05rem; }
+    .cloud-price { color: var(--green); font-size: 0.85rem; font-weight: 600; }
+    .cloud-desc { color: var(--muted); font-size: 0.82rem; line-height: 1.5; }
+    .cloud-badge {
+      display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px;
+      font-size: 0.7rem; font-weight: 700; background: rgba(52,211,153,0.15);
+      color: var(--green); border: 1px solid rgba(52,211,153,0.3);
+    }
+    .cloud-arrow { margin-top: auto; color: var(--accent2); font-size: 0.85rem; font-weight: 600; }
+
+    /* ── WORKFLOWS TABLE ── */
+    .workflow-table { width: 100%; border-collapse: collapse; }
+    .workflow-table th, .workflow-table td {
+      padding: 0.9rem 1.25rem; border: 1px solid var(--border); text-align: left; font-size: 0.9rem;
+    }
+    .workflow-table th { background: var(--bg3); color: var(--accent2); font-weight: 600; }
+    .workflow-table tr:hover td { background: var(--bg2); }
+    .difficulty { font-size: 0.85rem; }
+
+    /* ── FAQ ── */
+    .faq { display: flex; flex-direction: column; gap: 0.75rem; }
+    .faq-item {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+    }
+    .faq-q {
+      width: 100%; text-align: left; padding: 1.1rem 1.5rem;
+      background: none; border: none; color: var(--text);
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .faq-q::after { content: '+'; font-size: 1.2rem; color: var(--accent2); transition: transform 0.2s; }
+    .faq-q.open::after { transform: rotate(45deg); }
+    .faq-a { padding: 0 1.5rem 1.1rem; color: var(--muted); font-size: 0.9rem; display: none; }
+    .faq-a.open { display: block; }
+    .faq-a a { color: var(--accent2); }
+
+    /* ── CTA BANNER ── */
+    .cta {
+      background: linear-gradient(135deg, rgba(124,111,238,0.15), rgba(157,78,221,0.1));
+      border: 1px solid rgba(124,111,238,0.3); border-radius: 24px;
+      padding: 4rem 2rem; text-align: center; margin: 3rem 1.5rem;
+    }
+    .cta h2 { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
+    .cta p { color: var(--muted); margin-bottom: 2rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border); padding: 2rem 1.5rem;
+      text-align: center; color: var(--muted); font-size: 0.85rem;
+    }
+    footer a { color: var(--accent2); text-decoration: none; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.5s, transform 0.5s; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hero h1 { font-size: 2.2rem; }
+      .step { flex-direction: column; }
+      .stats { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⚡ ComfyUI Installer</div>
+  <ul class="nav-links">
+    <li><a href="#install">Install</a></li>
+    <li><a href="#tutorial">Tutorial</a></li>
+    <li><a href="#cloud">Cloud GPU</a></li>
+    <li><a href="#workflows">Workflows</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-lang">
+    <a href="#en" class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</a>
+    <a href="#zh" class="lang-btn" id="btn-zh" onclick="setLang('zh')">中文</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="badge">✨ Open Source · Free · Cross-Platform</div>
+
+  <!-- English Content -->
+  <div id="en-hero">
+    <h1>Install ComfyUI<br/>in One Command</h1>
+    <p>Auto-detects your GPU, installs dependencies, sets up ComfyUI Manager, and loads AI manga workflows — all in minutes.</p>
+  </div>
+  <!-- Chinese Content -->
+  <div id="zh-hero" style="display:none">
+    <h1>一条命令，安装 ComfyUI</h1>
+    <p>自动检测 GPU、安装依赖、配置 ComfyUI Manager，内置 AI 漫剧工作流模板 — 几分钟搞定。</p>
+  </div>
+
+  <div class="hero-btns">
+    <a href="https://github.com/ryantryor/comfyui-installer" class="btn-primary" target="_blank">
+      ⭐ Star on GitHub
+    </a>
+    <a href="#install" class="btn-secondary">
+      📦 Quick Install ↓
+    </a>
+  </div>
+
+  <!-- Install Block -->
+  <div class="install-block" id="install">
+    <div class="install-tabs">
+      <button class="install-tab active" onclick="switchTab('linux')">Linux / macOS</button>
+      <button class="install-tab" onclick="switchTab('win')">Windows</button>
+    </div>
+    <div id="tab-linux" class="code-panel active">
+      <div class="code-block" id="code-linux">
+curl -sSL https://raw.githubusercontent.com/ryantryor/comfyui-installer/main/install.sh | bash
+        <button class="copy-btn" onclick="copyCode('code-linux')">Copy</button>
+      </div>
+    </div>
+    <div id="tab-win" class="code-panel">
+      <div class="code-block" id="code-win">
+Set-ExecutionPolicy Bypass -Scope Process -Force
+irm https://raw.githubusercontent.com/ryantryor/comfyui-installer/main/install.ps1 | iex
+        <button class="copy-btn" onclick="copyCode('code-win')">Copy</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats reveal">
+  <div class="stat"><div class="stat-number">3</div><div class="stat-label">Platforms Supported</div></div>
+  <div class="stat"><div class="stat-number">5+</div><div class="stat-label">Manga Workflows</div></div>
+  <div class="stat"><div class="stat-number">1</div><div class="stat-label">Command to Install</div></div>
+  <div class="stat"><div class="stat-number">100%</div><div class="stat-label">Free & Open Source</div></div>
+</div>
+
+<!-- FEATURES -->
+<section class="section reveal" id="features">
+  <div class="section-tag" id="en-feat-tag">Features</div>
+  <div class="section-tag" id="zh-feat-tag" style="display:none">功能特点</div>
+  <h2 id="en-feat-h">Everything You Need, Zero Hassle</h2>
+  <h2 id="zh-feat-h" style="display:none">开箱即用，无需折腾</h2>
+  <p id="en-feat-p">Everything is handled automatically — from GPU detection to plugin setup.</p>
+  <p id="zh-feat-p" style="display:none">从 GPU 检测到插件配置，全部自动完成。</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <h3 id="ef1">Auto GPU Detection</h3>
+      <p id="ef1p">Detects NVIDIA GPU automatically. Falls back to CPU mode if no GPU is found.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🧩</div>
+      <h3 id="ef2">ComfyUI Manager Included</h3>
+      <p id="ef2p">Plugin and node management pre-installed. Add new nodes in one click.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎨</div>
+      <h3 id="ef3">Manga Workflow Templates</h3>
+      <p id="ef3p">5+ pre-built .json workflows for AI manga, storyboards, and character generation.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📦</div>
+      <h3 id="ef4">One-Click Model Download</h3>
+      <p id="ef4p">Choose from SDXL, SD 1.5, or Flux — downloaded and configured automatically.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🖥️</div>
+      <h3 id="ef5">Windows Portable Mode</h3>
+      <p id="ef5p">No Python required on Windows. Desktop shortcut created after install.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌐</div>
+      <h3 id="ef6">China Mirror Speed</h3>
+      <p id="ef6p">Built-in HuggingFace mirror (hf-mirror.com) for fast downloads in China.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TUTORIAL -->
+<section class="section reveal" id="tutorial" style="background: var(--bg2); max-width: 100%; padding: 5rem 1.5rem;">
+  <div style="max-width: 800px; margin: 0 auto;">
+    <div class="section-tag" id="en-tut-tag">Tutorial</div>
+    <div class="section-tag" id="zh-tut-tag" style="display:none">安装教程</div>
+    <h2 id="en-tut-h">How to Install ComfyUI</h2>
+    <h2 id="zh-tut-h" style="display:none">ComfyUI 安装步骤</h2>
+    <p id="en-tut-p" style="margin-bottom: 2.5rem;">Follow these steps to get ComfyUI running in under 10 minutes.</p>
+    <p id="zh-tut-p" style="display:none; margin-bottom: 2.5rem;">按以下步骤，10 分钟内让 ComfyUI 跑起来。</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3 id="s1h">Run the install command</h3>
+          <p id="s1p">Open your terminal (or PowerShell as Admin on Windows) and paste the one-liner for your OS.</p>
+          <div class="step-code"># Linux / macOS
+curl -sSL https://raw.githubusercontent.com/ryantryor/comfyui-installer/main/install.sh | bash</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3 id="s2h">Choose your options</h3>
+          <p id="s2p">The script will ask: install path, which model to download, and whether to include the manga workflow pack. Just follow the prompts.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3 id="s3h">Launch ComfyUI</h3>
+          <p id="s3p">When done, run <code>bash ~/ComfyUI/start.sh</code> (Linux/Mac) or double-click the desktop shortcut (Windows).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3 id="s4h">Open in browser</h3>
+          <p id="s4p">Navigate to <code>http://127.0.0.1:8188</code> — ComfyUI is ready. Load any workflow from the <code>workflows/</code> folder to start generating.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOUD GPU -->
+<section class="section reveal" id="cloud">
+  <div class="section-tag" id="en-cloud-tag">Cloud GPU</div>
+  <div class="section-tag" id="zh-cloud-tag" style="display:none">云端 GPU</div>
+  <h2 id="en-cloud-h">No GPU? Run on Cloud</h2>
+  <h2 id="zh-cloud-h" style="display:none">没有 GPU？用云端跑</h2>
+  <p id="en-cloud-p">Skip the hardware altogether. These platforms let you run ComfyUI on a cloud GPU in minutes.</p>
+  <p id="zh-cloud-p" style="display:none">跳过本地配置，直接在云端 GPU 上运行 ComfyUI，几分钟即可启动。</p>
+
+  <div class="cloud-grid">
+    <a href="https://runpod.io?ref=ut0jez4s" class="cloud-card featured" target="_blank" rel="noopener">
+      <div class="cloud-logo">🚀</div>
+      <div>
+        <div class="cloud-name">RunPod</div>
+        <div class="cloud-price" id="rp-price">From $0.2 / hr</div>
+      </div>
+      <span class="cloud-badge" id="rp-badge">Global · Best for non-China users</span>
+      <p class="cloud-desc" id="rp-desc">RTX 4090 available. Persistent storage. One-click ComfyUI template in the community library.</p>
+      <div class="cloud-arrow">Get Started →</div>
+    </a>
+    <a href="https://www.aliyun.com/minisite/goods?userCode=tdk43jyw" class="cloud-card" target="_blank" rel="noopener">
+      <div class="cloud-logo">⚡</div>
+      <div>
+        <div class="cloud-name" id="ali-name">Aliyun (阿里云)</div>
+        <div class="cloud-price" id="ali-price">10% off new users</div>
+      </div>
+      <span class="cloud-badge" id="ali-badge">China · Alibaba Cloud</span>
+      <p class="cloud-desc" id="ali-desc">China's leading cloud. Stable, fast domestic network. GPU instances available.</p>
+      <div class="cloud-arrow">Get Coupon →</div>
+    </a>
+    <a href="https://curl.qcloud.com/7EQPRMGF" class="cloud-card" target="_blank" rel="noopener">
+      <div class="cloud-logo">🌐</div>
+      <div>
+        <div class="cloud-name" id="tc-name">Tencent Cloud (腾讯云)</div>
+        <div class="cloud-price" id="tc-price">New user deals</div>
+      </div>
+      <span class="cloud-badge" id="tc-badge">China · Tencent</span>
+      <p class="cloud-desc" id="tc-desc">Backed by Tencent. Great pricing for new users. GPU T4 / V100 instances.</p>
+      <div class="cloud-arrow">Get Deal →</div>
+    </a>
+    <a href="https://www.liblib.art/viphome?referralCode=sW2nzHV5" class="cloud-card" target="_blank" rel="noopener">
+      <div class="cloud-logo">🎨</div>
+      <div>
+        <div class="cloud-name">Liblib AI (哩布哩布)</div>
+        <div class="cloud-price" id="ll-price">Online · No setup</div>
+      </div>
+      <span class="cloud-badge" id="ll-badge">Model Community · VIP</span>
+      <p class="cloud-desc" id="ll-desc">China's largest SD model community. Run models online, no GPU needed on your end.</p>
+      <div class="cloud-arrow">Browse Models →</div>
+    </a>
+  </div>
+</section>
+
+<!-- WORKFLOWS -->
+<section class="section reveal" id="workflows">
+  <div class="section-tag" id="en-wf-tag">Workflows</div>
+  <div class="section-tag" id="zh-wf-tag" style="display:none">漫画工作流</div>
+  <h2 id="en-wf-h">AI Manga Workflows Included</h2>
+  <h2 id="zh-wf-h" style="display:none">内置 AI 漫剧工作流</h2>
+  <p id="en-wf-p" style="margin-bottom: 2rem;">Drag any .json file into ComfyUI to load the workflow instantly.</p>
+  <p id="zh-wf-p" style="display:none; margin-bottom: 2rem;">将任意 .json 文件拖入 ComfyUI 即可直接加载工作流。</p>
+
+  <table class="workflow-table">
+    <thead>
+      <tr>
+        <th id="wt1">Workflow File</th>
+        <th id="wt2">Use Case</th>
+        <th id="wt3">Difficulty</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>manga_character.json</code></td><td id="wc1">Manga-style character generation</td><td class="difficulty">⭐ Beginner</td></tr>
+      <tr><td><code>manga_storyboard.json</code></td><td id="wc2">Batch storyboard / panel generation</td><td class="difficulty">⭐⭐ Easy</td></tr>
+      <tr><td><code>coloring_workflow.json</code></td><td id="wc3">Auto-colorize line art</td><td class="difficulty">⭐⭐ Easy</td></tr>
+      <tr><td><code>consistent_character.json</code></td><td id="wc4">Character consistency (IP-Adapter)</td><td class="difficulty">⭐⭐⭐ Medium</td></tr>
+      <tr><td><code>batch_scene.json</code></td><td id="wc5">Batch scene / background generation</td><td class="difficulty">⭐⭐⭐ Medium</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- FAQ -->
+<section class="section reveal" id="faq">
+  <div class="section-tag" id="en-faq-tag">FAQ</div>
+  <div class="section-tag" id="zh-faq-tag" style="display:none">常见问题</div>
+  <h2 id="en-faq-h">Frequently Asked Questions</h2>
+  <h2 id="zh-faq-h" style="display:none">常见问题解答</h2>
+
+  <div class="faq" style="margin-top: 2rem; max-width: 720px;">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        <span id="fq1">Do I need a GPU to use ComfyUI?</span>
+      </button>
+      <div class="faq-a" id="fa1">
+        No — but without a GPU, generation will be very slow (several minutes per image using CPU). For fast generation, use a <a href="https://runpod.io?ref=ut0jez4s" target="_blank">cloud GPU like RunPod</a> (from $0.2/hr) or <a href="https://www.aliyun.com/minisite/goods?userCode=tdk43jyw" target="_blank">Aliyun</a> for users in China.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        <span id="fq2">CUDA out of memory error?</span>
+      </button>
+      <div class="faq-a" id="fa2">
+        Add <code>--lowvram</code> to the launch command: <code>python main.py --lowvram</code>. If you have less than 6 GB VRAM, consider using a cloud GPU instead.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        <span id="fq3">Model downloads are slow in China?</span>
+      </button>
+      <div class="faq-a" id="fa3">
+        The script automatically uses <code>hf-mirror.com</code> as a HuggingFace mirror. You can also browse and download models directly from <a href="https://www.liblib.art/viphome?referralCode=sW2nzHV5" target="_blank">Liblib AI</a> — China's largest model community.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        <span id="fq4">How do I update ComfyUI later?</span>
+      </button>
+      <div class="faq-a" id="fa4">
+        <code>cd ~/ComfyUI && git pull</code> on Linux/Mac, or use the ComfyUI Manager UI to update nodes and extensions from within the browser interface.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        <span id="fq5">Which models work best for AI manga?</span>
+      </button>
+      <div class="faq-a" id="fa5">
+        We recommend <strong>Animagine XL 3.1</strong> or <strong>Kohaku XL</strong> for high-quality anime/manga output. Both can be downloaded via the <code>download_models.sh</code> script, or browsed on <a href="https://www.liblib.art/viphome?referralCode=sW2nzHV5" target="_blank">Liblib AI</a>.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta reveal">
+  <h2 id="en-cta-h">Ready to start creating?</h2>
+  <h2 id="zh-cta-h" style="display:none">准备好开始创作了吗？</h2>
+  <p id="en-cta-p">One command. Zero config. ComfyUI running in minutes.</p>
+  <p id="zh-cta-p" style="display:none">一条命令，零配置，几分钟内跑起 ComfyUI。</p>
+  <div class="hero-btns">
+    <a href="https://github.com/ryantryor/comfyui-installer" class="btn-primary" target="_blank">⭐ Star on GitHub</a>
+    <a href="https://runpod.io?ref=ut0jez4s" class="btn-secondary" target="_blank">🚀 Try on RunPod</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    Built with ❤️ by <a href="https://github.com/ryantryor" target="_blank">ryantryor</a> ·
+    <a href="https://github.com/ryantryor/comfyui-installer" target="_blank">GitHub</a> ·
+    <a href="https://github.com/ryantryor/comfyui-installer/blob/main/LICENSE" target="_blank">MIT License</a>
+  </p>
+  <p style="margin-top: 0.5rem; font-size: 0.75rem; color: #555;">
+    Affiliate links on this page help support the project. Thank you! 🙏
+  </p>
+</footer>
+
+<script>
+  // Language toggle
+  const enEls = ['en-hero','en-feat-tag','en-feat-h','en-feat-p','en-tut-tag','en-tut-h','en-tut-p','en-cloud-tag','en-cloud-h','en-cloud-p','en-wf-tag','en-wf-h','en-wf-p','en-faq-tag','en-faq-h','en-cta-h','en-cta-p'];
+  const zhEls = ['zh-hero','zh-feat-tag','zh-feat-h','zh-feat-p','zh-tut-tag','zh-tut-h','zh-tut-p','zh-cloud-tag','zh-cloud-h','zh-cloud-p','zh-wf-tag','zh-wf-h','zh-wf-p','zh-faq-tag','zh-faq-h','zh-cta-h','zh-cta-p'];
+
+  const zhContent = {
+    'ef1': '自动检测 GPU', 'ef1p': '自动识别 NVIDIA GPU，无 GPU 时切换 CPU 模式。',
+    'ef2': '内置 ComfyUI Manager', 'ef2p': '预安装插件管理器，节点一键安装。',
+    'ef3': '漫画工作流模板', 'ef3p': '5+ 预置 .json 工作流，涵盖人物生成、分镜、上色等。',
+    'ef4': '一键下载模型', 'ef4p': '选择 SDXL、SD 1.5 或 Flux，自动下载并配置好。',
+    'ef5': 'Windows 便携模式', 'ef5p': '无需手动安装 Python，安装后自动创建桌面快捷方式。',
+    'ef6': '国内镜像加速', 'ef6p': '内置 HuggingFace 镜像站 (hf-mirror.com)，国内高速下载。',
+    's1h': '运行安装命令', 's1p': '打开终端（Windows 用管理员 PowerShell），粘贴对应命令。',
+    's2h': '按提示选择选项', 's2p': '脚本会提示选择：安装路径、模型、是否安装漫画工作流包。',
+    's3h': '启动 ComfyUI', 's3p': '安装完成后运行 start.sh（Linux/Mac）或双击桌面图标（Windows）。',
+    's4h': '打开浏览器', 's4p': '访问 http://127.0.0.1:8188，将 workflows/ 目录中 .json 文件拖入即可使用。',
+    'rp-price': '最低 $0.2 / 小时', 'rp-badge': '全球可用 · 海外用户首选',
+    'rp-desc': 'RTX 4090 可选，持久存储，社区库有一键 ComfyUI 模板。',
+    'ali-price': '新用户10%折扣', 'ali-badge': '国内 · 阿里云',
+    'ali-desc': '国内顶级云服务商，速度稳定，GPU 实例可选。',
+    'tc-price': '新用户专属特惠', 'tc-badge': '国内 · 腾讯云',
+    'tc-desc': '腾讯出品，新用户优惠力度大，T4/V100 GPU 实例可选。',
+    'll-price': '在线使用 · 无需配置', 'll-badge': '模型社区 · VIP 专属',
+    'll-desc': '国内最大 SD 模型社区，直接在线跑模型，无需本地 GPU。',
+    'wt1': '工作流文件', 'wt2': '用途', 'wt3': '难度',
+    'wc1': '漫画风格人物生成', 'wc2': '分镜批量生成', 'wc3': '线稿自动上色',
+    'wc4': '人物一致性保持 (IP-Adapter)', 'wc5': '场景批量生成',
+    'fq1': '没有 GPU 也能用吗？', 'fq2': '报错"显存不足"怎么办？',
+    'fq3': '国内下载模型太慢？', 'fq4': '如何更新 ComfyUI？',
+    'fq5': 'AI 漫画最推荐哪个模型？'
+  };
+  const enContent = {};
+  Object.keys(zhContent).forEach(k => { enContent[k] = document.getElementById(k)?.textContent || ''; });
+
+  function setLang(lang) {
+    const isZh = lang === 'zh';
+    document.getElementById('btn-en').classList.toggle('active', !isZh);
+    document.getElementById('btn-zh').classList.toggle('active', isZh);
+
+    enEls.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = isZh ? 'none' : ''; });
+    zhEls.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = isZh ? '' : 'none'; });
+
+    const content = isZh ? zhContent : enContent;
+    Object.keys(content).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = content[id];
+    });
+    localStorage.setItem('lang', lang);
+  }
+
+  // Restore saved language
+  const savedLang = localStorage.getItem('lang');
+  if (savedLang === 'zh') setLang('zh');
+
+  // Tab switcher
+  function switchTab(name) {
+    document.querySelectorAll('.install-tab').forEach((t, i) => t.classList.toggle('active', ['linux','win'][i] === name));
+    document.querySelectorAll('.code-panel').forEach((p, i) => p.classList.toggle('active', ['tab-linux','tab-win'][i] === 'tab-' + name));
+    document.getElementById('tab-' + name).classList.add('active');
+  }
+
+  // Copy to clipboard
+  function copyCode(id) {
+    const el = document.getElementById(id);
+    const text = el.innerText.replace('Copy','').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = el.querySelector('.copy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+
+  // FAQ toggle
+  function toggleFaq(btn) {
+    const answer = btn.nextElementSibling;
+    btn.classList.toggle('open');
+    answer.classList.toggle('open');
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
