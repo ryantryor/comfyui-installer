@@ -9,7 +9,7 @@
 [![Stars](https://img.shields.io/github/stars/ryantryor/comfyui-installer?style=social)](https://github.com/ryantryor/comfyui-installer/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blue)](#)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
+[![Website](https://img.shields.io/badge/🌐_Tutorial_Site-ryantryor.github.io-7c6fee)](https://ryantryor.github.io/comfyui-installer/)
 
 **🌐 Language / 语言切换**
 
@@ -45,6 +45,8 @@ A one-click installer for [ComfyUI](https://github.com/comfyanonymous/ComfyUI) �
 ---
 
 ### 🚀 Quick Install
+
+> 📖 **Full tutorial with screenshots** → [ryantryor.github.io/comfyui-installer](https://ryantryor.github.io/comfyui-installer/)
 
 **Linux / macOS** (one command):
 ```bash
@@ -180,6 +182,8 @@ PRs welcome! See [CONTRIBUTING.md](CONTRIBUTING.md)
 ---
 
 ### 🚀 快速安装
+
+> 📖 **图文详细教程** → [ryantryor.github.io/comfyui-installer](https://ryantryor.github.io/comfyui-installer/)
 
 **Linux / macOS**（一行命令）：
 ```bash
